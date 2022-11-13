@@ -1,11 +1,45 @@
+import * as React from 'react';
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFolderOpen, faNewspaper, } from '@fortawesome/free-solid-svg-icons'
+import { faYoutube } from '@fortawesome/free-brands-svg-icons'
+
+
+
+
 
 
 export default function Home({ launches }) {
+
   console.log('launches', launches);
+
+  
+  const renderedData = launches.map(launch => {
+    return (
+      
+        <div key={launch.id}  className={styles.card}>
+            <h2>{launch.mission_name}<img className={styles.patch} src={launch.links.mission_patch_small}></img></h2>
+            <p><strong>Launch Time: </strong>{new Date(launch.launch_date_local).toLocaleDateString("en-ca")}</p>
+            <p><strong>Rocket: </strong>{launch.rocket.rocket_name}</p>
+            <sub>{launch.launch_site.site_name_long}</sub>
+
+              <div className={styles.links}>
+                  {launch.links.article_link && <a href={launch.links.article_link} target="_blank"><FontAwesomeIcon icon={faNewspaper}/></a>}
+
+                  {launch.links.video_link && <a href={launch.links.video_link} target="_blank"><FontAwesomeIcon icon={faYoutube}/></a>}
+                  
+              </div>
+              
+              
+              
+              
+        </div>
+      
+    )
+  });
 
   return (
     <div className={styles.container}>
@@ -15,39 +49,19 @@ export default function Home({ launches }) {
         </Head>
 
         <main className={styles.main}>
-          <h1 className={styles.title}>
-          SpaceX Launches
-          </h1>
+            <h1 className={styles.title}>
+            SpaceX Launch Tracker
+            </h1>
 
-          <p className={styles.description}>
-            latest launches
-          </p>
+            <p className={styles.description}>
+              Latest SpaceX launches
+            </p>
 
-          <div className={styles.grid}>
-            {launches.map(launch => {
-              return (
-              
-                  <div key={launch.id}  className={styles.card}>
-                    <h2>{launch.mission_name}</h2>
-                    <p><strong>Launch Time: </strong>{new Date(launch.launch_date_local).toLocaleDateString("en-ca")}</p>
-                    <img className={styles.patch} src={launch.links.mission_patch_small}></img>
-                    <p>{launch.rocket.rocket_name}</p>
-                    <p>{launch.launch_site.site_name_long}</p>
+            <div className={styles.grid}>
+              {renderedData}
+            </div>
 
-                    <div className={styles.links}>
-                        {launch.links.video_link && <a href={launch.links.video_link} target="_blank">Video Link </a>}
-                        {launch.links.article_link && <a href={launch.links.article_link} target="_blank">Article link</a>}
-                    </div>
-                    
-                    
-                  </div>
-                
-              )
-            })}
-  
-          </div>
         </main>
-
     </div>
   )
 }
@@ -61,7 +75,7 @@ export async function getStaticProps() {
   const { data } = await client.query({
     query: gql`
       query GetLaunches {
-        launchesPast(limit: 12) {
+        launchesPast(limit: 10) {
           mission_name
           launch_date_local
           launch_site {
