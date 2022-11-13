@@ -15,19 +15,25 @@ export default function Home({ launches }) {
     launches[0].mission_name
   );
 
+  const [clicked, setClicked] = React.useState(false);
+  const handleClick = () => {
+    setClicked(!clicked);
+  };
   
   const renderedData = launches.map(launch => {
     return (
       
-        <div key={launch.id}  className={styles.card}>
+        <div key={launch.id}  className={styles.card} onClick={handleClick}>
+
             <h2>{launch.mission_name}</h2><img className={styles.patch} src={launch.links.mission_patch_small}></img>
-            <p className={styles.left}><strong>Launch Date: </strong>{new Date(launch.launch_date_local).toLocaleDateString("en-ca")}</p>
-            <p className={styles.left}><FontAwesomeIcon icon={faRocket}/> : {launch.rocket.rocket_name}</p>
+              <p className={styles.left}><strong>Launch Date: </strong>{new Date(launch.launch_date_local).toLocaleDateString("en-ca")}</p>
+              <p className={styles.left}><FontAwesomeIcon icon={faRocket}/> : {launch.rocket.rocket_name}</p>
             
             <sub>{launch.launch_site.site_name_long}</sub>
-              {launch.details && <p><sup>{launch.details}</sup></p>}
+
+              {launch.details && <p className={clicked ? styles.details : styles.detailsmore}>{launch.details}</p>}
+
               <div className={styles.linkdiv}>
-                
                   {launch.links.video_link && <a className={styles.links} href={launch.links.video_link} target="_blank"><FontAwesomeIcon icon={faYoutube}/></a>}
                   {launch.links.article_link && <a className={styles.links} href={launch.links.article_link} target="_blank"><FontAwesomeIcon icon={faNewspaper}/></a>}
                   

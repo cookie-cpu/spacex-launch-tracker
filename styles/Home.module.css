@@ -109,7 +109,18 @@
   width: 100px;
   opacity: .9;
   margin: 3px;
-
+}
+.details{
+  height: 100px;
+  text-align: left;
+  overflow:hidden
+  /* color: red; */
+}
+.details-more{
+  /* height: 150px;
+  text-align: left;
+  overflow:hidden */
+  overflow: visible;
 }
 
 .card:hover,
