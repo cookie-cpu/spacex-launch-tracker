@@ -113,10 +113,10 @@
 .details{
   height: 100px;
   text-align: left;
-  overflow:hidden
+  overflow:scroll
   /* color: red; */
 }
-.details-more{
+.detailsmore{
   /* height: 150px;
   text-align: left;
   overflow:hidden */

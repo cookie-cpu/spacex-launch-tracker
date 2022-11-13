@@ -31,7 +31,7 @@ export default function Home({ launches }) {
             
             <sub>{launch.launch_site.site_name_long}</sub>
 
-              {launch.details && <p className={clicked ? styles.details : styles.detailsmore}>{launch.details}</p>}
+              {launch.details && <p className={clicked ? styles.detailsmore : styles.details}>{launch.details}</p>}
 
               <div className={styles.linkdiv}>
                   {launch.links.video_link && <a className={styles.links} href={launch.links.video_link} target="_blank"><FontAwesomeIcon icon={faYoutube}/></a>}
