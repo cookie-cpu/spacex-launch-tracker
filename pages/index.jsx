@@ -1,22 +1,16 @@
 import * as React from 'react';
 import Head from 'next/head'
-import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFolderOpen, faNewspaper, faRocket } from '@fortawesome/free-solid-svg-icons'
+import { faNewspaper, faRocket } from '@fortawesome/free-solid-svg-icons'
 import { faYoutube } from '@fortawesome/free-brands-svg-icons'
 
 export default function Home({ launches }) {
 
-  console.log(
-    'launches',
-    // launches,
-    launches[0].mission_name
-  );
-
   const [clicked, setClicked] = React.useState(false);
-  const [darkMode, setDarkMode] = React.useState(false);
+  const [darkMode, setDarkMode] = React.useState(true);
+
   const handleClick = () => {
     setClicked(!clicked);
   };
@@ -24,18 +18,17 @@ export default function Home({ launches }) {
     setDarkMode(!darkMode);
   };
   
-  const renderedData = launches.map(launch => {
+  const mappedLaunches = launches.map(launch => {
     return (
-      
         <div key={launch.id}  className={styles.card}>
 
             <h2>{launch.mission_name}</h2><img className={styles.patch} src={launch.links.mission_patch_small}></img>
               <p className={styles.left}><strong>Launch Date: </strong>{new Date(launch.launch_date_local).toLocaleDateString("en-ca")}</p>
-              <p className={styles.left}><FontAwesomeIcon icon={faRocket}/> : {launch.rocket.rocket_name}</p>
+              <p className={styles.left}>{launch.rocket.rocket_name} <FontAwesomeIcon icon={faRocket}/></p>
             
             <sub>{launch.launch_site.site_name_long}</sub>
 
-              {launch.details && <p className={clicked ? styles.detailsmore : styles.details}>{launch.details}</p>}
+              {launch.details && <div className={clicked ? styles.detailsmore : styles.details}>{launch.details}</div>}
 
               <div className={styles.linkdiv}>
                   {launch.links.video_link && <a className={styles.links} href={launch.links.video_link} target="_blank"><FontAwesomeIcon icon={faYoutube}/></a>}
@@ -55,20 +48,20 @@ export default function Home({ launches }) {
         </Head>
 
         <main className={styles.main}>
+        {darkMode ? <button className={styles.lightswitch} onClick={handleDarkMode}>🌙<sup></sup></button> : <button className={styles.lightswitch} onClick={handleDarkMode}>☀️</button>}
             <h1 className={styles.title}>
             SpaceX Launch Tracker
             </h1>
 
             <p className={styles.description}>
               Latest SpaceX Launches<br></br>
-              {darkMode ? <button className={styles.lightswitch} onClick={handleDarkMode}>🌙<sup></sup></button> : <button className={styles.lightswitch} onClick={handleDarkMode}>☀️</button>}
             </p>
 
-            {clicked ? <button onClick={handleClick}>Shrink All</button> : <button onClick={handleClick}>Expand All</button>}
+            {clicked ? <button className={styles.expand} onClick={handleClick}>Shrink All</button> : <button className={styles.expand} onClick={handleClick}>Expand All</button>}
             
 
             <div className={styles.grid}>
-              {renderedData}
+              {mappedLaunches}
             </div>
 
         </main>
@@ -85,7 +78,7 @@ export async function getStaticProps() {
   const { data } = await client.query({
     query: gql`
       query GetLaunches {
-        launchesPast(limit: 20) {
+        launchesPast(limit: 25) {
           mission_name
           launch_date_local
           launch_site {
